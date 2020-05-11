@@ -48,9 +48,13 @@ def model_fn(model_dir):
 
 def input_fn(serialized_input_data, content_type):
     print('Deserializing the input data.')
-    if content_type == CONTENT_TYPE:
+    #if content_type == CONTENT_TYPE:
+    if content_type == 'application/x-npy':
         stream = BytesIO(serialized_input_data)
         return np.load(stream)
+    elif content_type == 'text/csv':
+        df = pd.read_csv(StringIO(serialized_input_data), header=None)
+        return df.values
     raise Exception('Requested unsupported ContentType in content_type: ' + content_type)
 
 def output_fn(prediction_output, accept):
